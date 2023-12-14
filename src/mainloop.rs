@@ -7,16 +7,16 @@ use std::{thread, time::Duration};
 pub fn mainloop(
     node_list: &Vec<(String, u16)>,
     auth: &Option<String>,
-    health_check_interval: u64,
+    check_interval: u64,
 ) -> Result<()> {
     let mut master = get_master(node_list, auth)?;
-    print!("init master = {}:{}", master.0, master.1);
+    println!("init master = {}:{}", master.0, master.1);
     let mut process = forward(&master.0, master.1)?;
     loop {
-        thread::sleep(Duration::from_millis(health_check_interval));
+        thread::sleep(Duration::from_millis(check_interval));
         let new_master = get_master(node_list, auth)?;
         if master != new_master {
-            print!("new  master = {}:{}", master.0, master.1);
+            println!("new  master = {}:{}", master.0, master.1);
             master = new_master;
             process.kill().unwrap();
             process = forward(&master.0, master.1)?;
