@@ -18,11 +18,11 @@ Start with command (*Example*):
 docker run -d \
   --restart=always \
   --name=masteredis \
-  -d '6399:6379' \
+  -p '6399:6379' \
   -e 'REDIS_HOST=127.0.0.1' \
   -e 'REDIS_PORT=6379' \
   -e 'REDIS_USER=user' \
-  -e 'REDIS_PASSWORD=password'
+  -e 'REDIS_PASSWORD=password' \
   repigeons/masteredis
 ```
 

@@ -6,7 +6,7 @@ mod redis;
 
 fn main() -> std::io::Result<()> {
     let host = env::var("REDIS_HOST").expect("Environment variable unset: host");
-    let port = env::var("REDIS_HOST")
+    let port = env::var("REDIS_PORT")
         .expect("Environment variable unset: port")
         .parse::<u16>()
         .expect("Unresolved value: port");
