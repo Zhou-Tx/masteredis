@@ -47,7 +47,7 @@ fn get_master(node_list: &Vec<(String, u16)>, auth: &Option<String>) -> Result<(
 }
 
 fn forward(listen_port: u16, redis_host: &str, redis_port: u16) -> Result<Child> {
-    Command::new("socat")
+    Command::new("masteredis-socat")
         .arg(format!("TCP4-LISTEN:{listen_port},reuseaddr,fork"))
         .arg(format!("TCP4:{redis_host}:{redis_port}"))
         .spawn()
