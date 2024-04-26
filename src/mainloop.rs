@@ -5,13 +5,14 @@ use std::process::{Child, Command};
 use std::{thread, time::Duration};
 
 pub fn mainloop(
+    listen_port: u16,
     node_list: &Vec<(String, u16)>,
     auth: &Option<String>,
     check_interval: u64,
 ) -> Result<()> {
     let mut master = get_master(node_list, auth)?;
     println!("init master = {}:{}", master.0, master.1);
-    let mut process = forward(&master.0, master.1)?;
+    let mut process = forward(listen_port, &master.0, master.1)?;
     loop {
         thread::sleep(Duration::from_millis(check_interval));
         let new_master = get_master(node_list, auth)?;
@@ -19,7 +20,7 @@ pub fn mainloop(
             println!("new  master = {}:{}", master.0, master.1);
             master = new_master;
             process.kill().unwrap();
-            process = forward(&master.0, master.1)?;
+            process = forward(listen_port, &master.0, master.1)?;
         }
     }
 }
@@ -45,9 +46,9 @@ fn get_master(node_list: &Vec<(String, u16)>, auth: &Option<String>) -> Result<(
     Ok((host.to_string(), *port))
 }
 
-fn forward(host: &str, port: u16) -> Result<Child> {
+fn forward(listen_port: u16, redis_host: &str, redis_port: u16) -> Result<Child> {
     Command::new("socat")
-        .arg("TCP4-LISTEN:6379,reuseaddr,fork")
-        .arg(format!("TCP4:{host}:{port}"))
+        .arg(format!("TCP4-LISTEN:{listen_port},reuseaddr,fork"))
+        .arg(format!("TCP4:{redis_host}:{redis_port}"))
         .spawn()
 }

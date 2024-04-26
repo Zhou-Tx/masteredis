@@ -7,7 +7,7 @@ An auto-switch proxy for redis master node.
 - socat
 
 ```bash
-socat TCP4-LISTEN:6379,reuseaddr,fork TCP4:127.0.0.1:6379
+socat TCP4-LISTEN:6399,reuseaddr,fork TCP4:127.0.0.1:6379
 ```
 
 ## Getting Started
@@ -18,7 +18,8 @@ Start with command (*Example*):
 docker run -d \
   --restart=always \
   --name=masteredis \
-  -p '6399:6379' \
+  --network=host \
+  -e 'LISTEN_PORT=6399' \
   -e 'REDIS_HOST=127.0.0.1' \
   -e 'REDIS_PORT=6379' \
   -e 'REDIS_USER=user' \
@@ -29,10 +30,11 @@ docker run -d \
 
 ### Environment variables
 
-|variable      |type   |required|default|description|example|
-|:------------:|:-----:|:------:|:-----:|:---------:|:-----:|
-|REDIS_HOST    |string |true    | -     |any one redis node host.|127.0.0.1|
-|REDIS_PORT    |integer|true    | -     |any one redis node port.|6379|
-|REDIS_USER    |string |false   | -     |redis username, if set.||
-|REDIS_PASSWORD|string |false   | -     |redis password, if set.||
+|variable      |type   |required|default|description                                  |example|
+|:------------:|:-----:|:------:|:-----:|:-------------------------------------------:|:-----:|
+|LISTEN_PORT   |integer|false   |6379   |bind port                                    |6379|
+|REDIS_HOST    |string |true    | -     |any one redis node host.                     |127.0.0.1|
+|REDIS_PORT    |integer|true    | -     |any one redis node port.                     |6379|
+|REDIS_USER    |string |false   | -     |redis username, if set.                      ||
+|REDIS_PASSWORD|string |false   | -     |redis password, if set.                      ||
 |CHECK_INTERVAL|integer|false   |5000   |the interval to check master. (milliseconds) |5000|
